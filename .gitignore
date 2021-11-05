@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+**/build/
+**/Debug/
+**/Release/
+**/*.user
+**/*.suo
+**/*.db
+**/*.ipch
