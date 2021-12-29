@@ -117,6 +117,10 @@ public:
         return static_cast<float>(std::sqrt(x * x + y * y + z * z));
     }
 
+    float lenSqr() {
+        return static_cast<float>(x * x + y * y + z * z);
+    }
+
     float distance(const Vector3i &v) {
         return static_cast<float>(std::sqrt((x - v.x) * (x - v.x) + (y - v.y) * (y - v.y) + (z - v.z) * (z - v.z)));
     }

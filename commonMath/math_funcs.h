@@ -3,8 +3,6 @@
 #include "vector3.h"
 #include "box.h"
 
-static const Vector3 vCubeVer[8] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {1, 1, 0}, {1, 0, 1}, {0, 1, 1}, {1, 1, 1}};
-
 class Math {
 public:
 	Math() {} // useless to instance
@@ -54,10 +52,30 @@ public:
         if (v == 0) return 0;
         return v > 0 ? 1.f : -1.f;
     }
+    /*
+    static float IntervalRandom (int fMin, int fMax, unsigned int uiSeed = 0)
+    {
+        return IntervalRandom(static_cast<float>(fMin), static_cast<float>(fMax), uiSeed);
+    }*/
 
+    static float IntervalRandom(float fMin, float fMax, unsigned int uiSeed = 0)
+    {
+        if (uiSeed > 0)
+            srand(uiSeed);
+
+        float dRatio = ((float)rand())/((float)(RAND_MAX));
+        return (fMin + (fMax-fMin)*dRatio);
+    }
+
+    static float Clamp(float v, float fmin, float fmax) {
+        return (v < fmin ? fmin : (v > fmax ? fmax : v));
+    }
 
     static constexpr float PI = 3.14159265f;
     static constexpr float LOWEPSILON = 1e-4f;
     static constexpr int MAX_LOD = 4;
 
+    static constexpr float EPSILON = std::numeric_limits<float>::epsilon();
+    static constexpr float POS_INFINITY				= std::numeric_limits<float>::infinity();
+    static constexpr float NEG_INFINITY				= -std::numeric_limits<float>::infinity();
 };

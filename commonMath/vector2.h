@@ -6,7 +6,7 @@
 #include <cstring>
 #include <string>
 
-class Vector2
+class  Vector2
 {
 public:
     union {
@@ -27,11 +27,16 @@ public:
 
     void operator=(const Vector2 &v) { x = v.x; y = v.y; }
 
-    Vector2 operator+(const Vector2 &v) {
+    Vector2 operator+(const Vector2 &v) const {
         return Vector2 (x + v.x, y + v.y);
     }
+    Vector2 &operator+=(const Vector2 &v) {
+        x += v.x;
+        y += v.y;
+        return *this;
+    }
 
-    Vector2 operator-(const Vector2 &v) {
+    Vector2 operator-(const Vector2 &v) const {
         return Vector2 (x - v.x, y - v.y);
     }
 
@@ -45,7 +50,12 @@ public:
     }
 
     Vector2 operator+(const float v) {
-        return *this + Vector2(v);
+        return Vector2(x + v, y + v);
+    }
+    Vector2 &operator+=(const float v) {
+        x += v;
+        y += v;
+        return *this;
     }
 
     Vector2 operator-(const float v) {
@@ -57,7 +67,11 @@ public:
     }
 
     Vector2 operator*(const float v) {
-        return *this * Vector2(v);
+        return Vector2(x * v, y * v);
+    }
+
+    Vector2 ceil() {
+        return Vector2(std::ceil(x), std::ceil(y));
     }
 
     float volumn() {
@@ -68,8 +82,16 @@ public:
         return std::sqrt(x * x + y * y);
     }
 
+    float lenSqr() {
+        return x * x + y * y;
+    }
+
     float dot(const Vector2 &v) {
         return (x * v.y + y * v.x);
+    }
+
+    float cross(Vector2 &v) {
+        return x * v.y - y * v.x;
     }
 
     void normalize() {
@@ -77,6 +99,10 @@ public:
         if (length == 0) length = 1.0f;
         x /= length;
         y /= length;
+    }
+
+    float distance(const Vector2 &v) const {
+        return std::sqrt((x - v.x) * (x - v.x) + (y - v.y) * (y - v.y));
     }
 
     std::string toString() {
