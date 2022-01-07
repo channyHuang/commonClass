@@ -1,13 +1,10 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#ifndef real
-#define real float
-#endif
-
 #include "vector2.h"
 
 class Vertex2D {
+    typedef float real;
 public:
     Vertex2D() {}
     Vertex2D(real x, real y) : vPos(x, y) {}

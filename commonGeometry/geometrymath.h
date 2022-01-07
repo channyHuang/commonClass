@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GEOMETRYMATH_H
+#define GEOMETRYMATH_H
 
 #include <vector>
 #include <cmath>
@@ -9,9 +10,7 @@
 #include "math_funcs.h"
 #include "boxi.h"
 
-#ifndef real
-#define real float
-#endif
+typedef float real;
 
 static std::vector<Vector3> vDir8Corner = {
     {1, 1, 1}, {1, -1, 1}, {-1, -1, 1}, {-1, 1, 1},
@@ -224,3 +223,4 @@ inline real distancePointSegment(const Vector2 &c, const Vector2 &a, const Vecto
     return vClosePoint.distance(c);
 }
 
+#endif

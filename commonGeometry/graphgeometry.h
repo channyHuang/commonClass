@@ -1,5 +1,5 @@
 #ifndef GRAPHGEOMETRY_H
-#define GRAPHGEMOETRY_H
+#define GRAPHGEOMETRY_H
 
 #include "vertex.h"
 #include "face.h"
@@ -8,8 +8,10 @@
 namespace Graph_Geometry {
 class GraphGeometry
 {
+    typedef float real;
 public:
     GraphGeometry() {}
+    ~GraphGeometry() {}
 
     inline Vertex2D const createVertex(const Vector2 &p) {
         return createVertex(p.x, p.y);

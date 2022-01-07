@@ -8,10 +8,6 @@
 #include <stdlib.h>
 
 #include "vector2.h"
-#include "vertex.h"
-#include "halfedge.h"
-#include "face.h"
-
 #include "graphgeometry.h"
 #include "geometrymath.h"
 

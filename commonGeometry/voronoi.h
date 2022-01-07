@@ -5,8 +5,6 @@
 #include <set>
 #include <cmath>
 
-#include "boxi.h"
-#include "vector3i.h"
 #include "noise.h"
 #include "geometrymath.h"
 #include "kdtree.h"

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef NODEMAP_H
+#define NODEMAP_H
 
 #include "vertexmap.h"
 
@@ -6,7 +7,7 @@ namespace Graph_Geometry {
     //record height of each vertices in voronoi
     template <class T>
     class NodeMap {
-
+        typedef float real;
     public:
         NodeMap() {}
         NodeMap(VertexMap *vertexMap) : m_vertexMap(vertexMap) {
@@ -220,3 +221,4 @@ namespace Graph_Geometry {
         std::vector<T> m_nodes;
     };
 }
+#endif

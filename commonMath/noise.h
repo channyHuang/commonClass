@@ -12,6 +12,7 @@
 
 #include "vector3.h"
 #include "math_funcs.h"
+#include <functional>
 
 // <Zylann> Added namespace to avoid conflict with Godot class
 namespace fast_noise_lite {

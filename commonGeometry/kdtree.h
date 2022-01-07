@@ -1,4 +1,5 @@
-#pragma once
+#ifndef KDTREE_H
+#define KDTREE_H
 
 #include <vector>
 #include "vector3.h"
@@ -81,3 +82,5 @@ private:
     std::vector<int> m_vLabels;
     std::vector<Vector3> m_vPoints;
 };
+
+#endif

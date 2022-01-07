@@ -1,11 +1,11 @@
-#pragma once
+#ifndef VERTEXMAP_H
+#define VERTEXMAP_H
 
 #include <stdio.h>
 #include <iostream>
 #include <vector>
 
 #include "box.h"
-#include "vertex.h"
 #include "graphgeometry.h"
 
 namespace Graph_Geometry {
@@ -43,3 +43,5 @@ namespace Graph_Geometry {
         std::vector<VertexType> m_vertexTypes;
     };
 }
+
+#endif
