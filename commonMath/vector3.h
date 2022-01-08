@@ -32,7 +32,7 @@ public:
 
     inline const void operator=(const Vector3 &v) { x = v.x; y = v.y; z = v.z; }
 
-    Vector3 operator+(const Vector3 &v) {
+    Vector3 operator+(const Vector3 &v) const {
         return Vector3 (x + v.x, y + v.y, z + v.z);
     }
 
@@ -43,7 +43,7 @@ public:
         return *this;
     }
 
-    Vector3 operator-(const Vector3 &v) {
+    Vector3 operator-(const Vector3 &v) const {
         return Vector3 (x - v.x, y - v.y, z - v.z);
     }
 
@@ -53,7 +53,7 @@ public:
         z -= v.z;
         return *this;
     }
-    Vector3 operator/(const Vector3 &v) {
+    Vector3 operator/(const Vector3 &v) const {
         if (v.x == 0 || v.y == 0 || v.z == 0) return *this;
         return Vector3 (x / v.x, y / v.y, z / v.z);
     }
@@ -155,6 +155,22 @@ public:
         return str;
     }
 
+    Vector3 getMax(float v) const {
+        return Vector3(std::max(x, v), std::max(y, v), std::max(z, v));
+    }
+
+    Vector3 getAbs() const {
+        return Vector3(std::fabs(x), std::fabs(y), std::fabs(z));
+    }
+
+    float getSumNum() const {
+        return x + y + z;
+    }
+
+    float getMaxNum() const {
+        return std::max(std::max(x, y), z);
+    }
+
     friend Vector3 operator*(const float k, const Vector3 &p)
     {
         return Vector3(k * p.x, k * p.y, k * p.z);
@@ -172,14 +188,14 @@ inline bool operator==(const Vector3 &a, const Vector3 &b) {
 inline bool operator!=(const Vector3 &a, const Vector3 &b) {
     return a.x != b.x || a.y != b.y || a.z != b.z;
 }
-
+/*
 inline Vector3 operator+(const Vector3 &a, const Vector3 &b) {
     return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 }
 
 inline Vector3 operator-(const Vector3 &a, const Vector3 &b) {
     return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
-}
+}*/
 
 inline Vector3 operator*(const int64_t p_scalar, const Vector3 &p_vec) {
     return p_vec * p_scalar;

@@ -21,7 +21,7 @@ public:
     Vector2(const float _x, const float _y) : x(_x), y(_y) {}
     ~Vector2() {}
 
-    const float &operator[](const int axis) const {
+    inline float &operator[](const int axis) {
         return data[axis];
     }
 
@@ -108,6 +108,10 @@ public:
     std::string toString() {
         std::string str = "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
         return str;
+    }
+
+    Vector2 getAbs() const {
+        return Vector2(std::fabs(x), std::fabs(y));
     }
 
     friend Vector2 operator*(const float k, const Vector2 &p)
