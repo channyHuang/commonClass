@@ -106,7 +106,7 @@ public:
         return (x * v.x + y * v.y + z * v.z);
     }
 
-    Vector3 cross(const Vector3 &v) {
+    Vector3 cross(const Vector3 &v) const {
         return Vector3(y * v.z - z * v.y, x * v.z - z * v.x, x * v.y - y * v.x);
     }
 
