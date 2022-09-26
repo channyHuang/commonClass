@@ -13,6 +13,9 @@ INCLUDEPATH += $$PWD/commonMath/
 include($$PWD/commonGeometry/commonGeometry.pri)
 INCLUDEPATH += $$PWD/commonGeometry/
 
+include($$PWD/commonAlgo/commonAlgo.pri)
+INCLUDEPATH += $$PWD/commonAlgo/
+
 HEADER_FILES = $$files($$PWD/*.h, false)
 SOURCE_FILES = $$files($$PWD/*.cpp, false)
 RESOURCE_FILES = $$files($$PWD/*qrc, false)
