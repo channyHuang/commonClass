@@ -132,7 +132,7 @@ public:
         z /= length;
     }
 
-    std::string toString() {
+    std::string toString() const {
         std::string str = "(" + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + ")";
         return str;
     }
@@ -205,5 +205,11 @@ struct Vector3iHasher {
         h = hash_djb2_one_32(vk.y, h);
         h = hash_djb2_one_32(vk.z, h);
         return h;
+    }
+};
+
+struct Vector3iHash {
+    size_t operator()(const Vector3i &vk) const {
+        return std::hash<std::string>()(std::to_string(vk.x) + "," + std::to_string(vk.y) + "," + std::to_string(vk.z));
     }
 };
