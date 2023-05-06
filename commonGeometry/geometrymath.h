@@ -4,11 +4,11 @@
 #include <vector>
 #include <cmath>
 
-#include "vector2.h"
-#include "vector3.h"
-#include "vector3i.h"
-#include "math_funcs.h"
-#include "boxi.h"
+#include "commonMath/vector2.h"
+#include "commonMath/vector3.h"
+#include "commonMath/vector3i.h"
+#include "commonMath/math_funcs.h"
+#include "commonMath/boxi.h"
 
 typedef float real;
 

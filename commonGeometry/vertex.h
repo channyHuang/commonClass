@@ -1,7 +1,7 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include "vector2.h"
+#include "commonMath/vector2.h"
 
 class Vertex2D {
     typedef float real;

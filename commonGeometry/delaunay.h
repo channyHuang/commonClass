@@ -7,7 +7,7 @@
 #include <vector>
 #include <stdlib.h>
 
-#include "vector2.h"
+#include "commonMath/vector2.h"
 #include "graphgeometry.h"
 #include "geometrymath.h"
 

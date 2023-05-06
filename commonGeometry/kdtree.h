@@ -2,9 +2,9 @@
 #define KDTREE_H
 
 #include <vector>
-#include "vector3.h"
-#include "box.h"
-#include "math_funcs.h"
+#include "commonMath/vector3.h"
+#include "commonMath/box.h"
+#include "commonMath/math_funcs.h"
 
 #define ERR 0.001
 #define MAXERR ((1 + ERR) * Math::EPSILON)

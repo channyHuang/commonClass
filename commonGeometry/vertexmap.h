@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#include "box.h"
+#include "commonMath/box.h"
 #include "graphgeometry.h"
 
 namespace Graph_Geometry {

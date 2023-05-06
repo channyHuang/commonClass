@@ -5,7 +5,7 @@
 #include <set>
 #include <cmath>
 
-#include "noise.h"
+#include "commonMath/noise.h"
 #include "geometrymath.h"
 #include "kdtree.h"
 #include "delaunay.h"

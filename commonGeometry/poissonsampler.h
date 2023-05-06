@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "vector2i.h"
-#include "vector2.h"
-#include "box.h"
+#include "commonMath/vector2i.h"
+#include "commonMath/vector2.h"
+#include "commonMath/box.h"
 #include "geometrymath.h"
 
 class PoissonDiscSampler {
