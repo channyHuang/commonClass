@@ -18,7 +18,8 @@ namespace SignalSlots
     class SignalImpl
     {
     public:
-        std::vector<std::shared_ptr<SlotImplType> > slots;
+        std::shared_ptr<SlotImplType> t;
+        std::vector<std::shared_ptr<SlotImplType>> vSlots;
     };
 
     class SlotImpl
@@ -45,12 +46,12 @@ namespace SignalSlots
 
         ~SlotImplT()
         {
-            std::shared_ptr<SignalImpl<SlotImplT>> sig = signal;
+            std::shared_ptr<SignalImpl<SlotImplT> > sig = signal;
             if ( sig == nullptr ) return;
 
-            for ( auto it = sig->slots.begin(); it != sig->slots.end(); ++it ) {
-                it = sig->slots.erase(it);
-                if ( it == sig->slots.end() ) {
+            for ( auto it = sig->vSlots.begin(); it != sig->vSlots.end(); ++it ) {
+                it = sig->vSlots.erase(it);
+                if ( it == sig->vSlots.end() ) {
                     break;
                 }
             }
@@ -87,15 +88,15 @@ namespace SignalSlots
     class Signal
     {
     public:
-        Signal() : impl(std::make_shared<SignalImpl<SlotImplT<FuncType>>>()) {}
+        Signal() : impl(std::make_shared<SignalImpl<SlotImplT<FuncType> > >()) {}
 
         template<class... Args>
         void operator()(Args&&... args)
         {
-            std::vector<std::shared_ptr<SlotImplT<FuncType>>> slotVector = impl->slots;
+            std::vector<std::shared_ptr<SlotImplT<FuncType>>> slotVector = impl->vSlots;
             for ( std::shared_ptr<SlotImplT<FuncType>>& weak_slot : slotVector )
             {
-                std::shared_ptr<SlotImplT<FuncType>> slot = weak_slot.lock();
+                std::shared_ptr<SlotImplT<FuncType>> slot = weak_slot;
                 if ( slot ) {
                     slot->callback(std::forward<Args>(args)...);
                 }
@@ -106,7 +107,7 @@ namespace SignalSlots
         {
             std::shared_ptr<SlotImplT<FuncType>> slotImpl = std::make_shared<SlotImplT<FuncType>>(impl, func);
 
-            impl->slots.push_back(slotImpl);
+            impl->vSlots.push_back(slotImpl);
 
             return Slot(slotImpl);
         }
