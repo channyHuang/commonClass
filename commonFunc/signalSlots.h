@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SIGNALSLOTS_H
+#define SIGNALSLOTS_H
+
 #include <functional>
 #include <memory>
 #include <vector>
@@ -122,3 +124,5 @@ namespace SignalSlots
         std::shared_ptr<SignalImpl<SlotImplT<FuncType>>> impl;
     };
 }
+
+#endif
