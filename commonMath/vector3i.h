@@ -6,7 +6,7 @@
 #include <cstring>
 #include <string>
 
-#include "math_funcs.h"
+#include "vector3.h"
 
 class Vector3i
 {
@@ -146,9 +146,23 @@ public:
     }
 
     static void sort_min_max(Vector3i &a, Vector3i &b) {
-        Math::sort_min_max(a.x, b.x);
-        Math::sort_min_max(a.y, b.y);
-        Math::sort_min_max(a.z, b.z);
+        if (a.x > b.x) {
+            int v = a.x;
+            a.x = b.x;
+            b.x = v;
+        }
+
+        if (a.y > b.y) {
+            int v = a.y;
+            a.y = b.y;
+            b.y = v;
+        }
+
+        if (a.z > b.z) {
+            int v = a.z;
+            a.z = b.z;
+            b.z = v;
+        }
     }
 
     // Clamps between min and max, where max is excluded

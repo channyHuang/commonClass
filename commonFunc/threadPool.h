@@ -18,7 +18,30 @@ public:
     template<class F, class... Args>
     auto enqueue(F&& f, Args&&... args) 
         -> std::future<typename std::result_of<F(Args...)>::type>;
-    void setMaxThreadCount(size_t threadCount = 3);
+    void setMaxThreadCount(size_t threadCount = 3) {
+        for(size_t i = 0;i<threadCount;++i)
+            workers.emplace_back(
+                [this]
+                {
+                    for(;;)
+                    {
+                        std::function<void()> task;
+
+                        {
+                            std::unique_lock<std::mutex> lock(this->queue_mutex);
+                            this->condition.wait(lock,
+                                [this]{ return this->stop || !this->tasks.empty(); });
+                            if(this->stop && this->tasks.empty())
+                                return;
+                            task = std::move(this->tasks.front());
+                            this->tasks.pop();
+                        }
+
+                        task();
+                    }
+                }
+            );
+    }
     ~ThreadPool();
 private:
     // need to keep track of threads so we can join them
@@ -37,31 +60,6 @@ inline ThreadPool::ThreadPool(size_t threads)
     :   stop(false)
 {
     for(size_t i = 0;i<threads;++i)
-        workers.emplace_back(
-            [this]
-            {
-                for(;;)
-                {
-                    std::function<void()> task;
-
-                    {
-                        std::unique_lock<std::mutex> lock(this->queue_mutex);
-                        this->condition.wait(lock,
-                            [this]{ return this->stop || !this->tasks.empty(); });
-                        if(this->stop && this->tasks.empty())
-                            return;
-                        task = std::move(this->tasks.front());
-                        this->tasks.pop();
-                    }
-
-                    task();
-                }
-            }
-        );
-}
-
-void ThreadPool::setMaxThreadCount(size_t threadCount) {
-    for(size_t i = 0;i<threadCount;++i)
         workers.emplace_back(
             [this]
             {

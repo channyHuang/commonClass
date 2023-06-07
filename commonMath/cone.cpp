@@ -20,7 +20,7 @@ float Cone::getSdf(Vector3 vPos) {
 
 Boxi Cone::getBox() {
     Boxi boxi;
-    boxi.vMin = vector3FloorOrCeil(m_vCenter - Vector3(m_fRadius, 0, m_fRadius), true);
-    boxi.vMax = vector3FloorOrCeil(m_vCenter + Vector3(m_fRadius, m_fHeight, m_fRadius), false);
+    boxi.vMin = Math::vector3FloorOrCeil(m_vCenter - Vector3(m_fRadius, 0, m_fRadius), true);
+    boxi.vMax = Math::vector3FloorOrCeil(m_vCenter + Vector3(m_fRadius, m_fHeight, m_fRadius), false);
     return boxi;
 }

@@ -101,16 +101,5 @@ enum Corner {
 	CORNER_BOTTOM_LEFT
 };
 
-/**
-  * The "Real" type is an abstract type used for real numbers, such as 1.5,
-  * in contrast to integer numbers. Precision can be controlled with the
-  * presence or absence of the REAL_T_IS_DOUBLE define.
-  */
-#ifdef REAL_T_IS_DOUBLE
-typedef double real_t;
-#else
-typedef float real_t;
-#endif
-
 #endif // MATH_DEFS_H
 
