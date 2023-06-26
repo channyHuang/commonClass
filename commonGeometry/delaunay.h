@@ -11,12 +11,16 @@
 #include "graphgeometry.h"
 #include "geometrymath.h"
 
+#include <unordered_map>
+
 namespace Graph_Geometry {
     class Delaunay {
     public:
         Delaunay() {};
 
         GraphGeometry triangulate(std::vector<Vector2> &points);
+
+        std::unordered_map<int, int> mapIndex;
 
     private:
         void getSuperTriangle(const std::vector<Vector2> &points,

@@ -14,6 +14,8 @@ namespace Graph_Geometry {
             Face f = locateTriangleAtPoint(p, T);
             if (f.id != -1) {
                 insertPointIntoTriangulation(p, f, T);
+
+                mapIndex[T.vertices.size() - 1] = points.size();
             }
         }
 
