@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector3.h"
+#include "commonMath/vector3.h"
 
 class Triangle {
 public:
@@ -14,6 +14,7 @@ public:
     void calcNormal() {
         if (bHasNormal) return;
         vNormal = (v1 - v0).cross(v2 - v0);
+        vNormal.normalize();
         bHasNormal = true;
     }
 

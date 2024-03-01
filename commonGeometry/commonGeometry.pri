@@ -1,4 +1,4 @@
-INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$PWD/../commonMath/
 
 #QMAKE_CXXFLAGS += -fopenmp
 

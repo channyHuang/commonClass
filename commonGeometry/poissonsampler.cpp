@@ -7,8 +7,8 @@
     https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
 */
 std::vector<Vector2> PoissonDiscSampler::generateSamples(const Box &bounds,
-       real r, int k) {
-       real dx = r / (real)sqrt(2);
+       float r, int k) {
+       float dx = r / (float)sqrt(2);
         SampleGrid grid(bounds, dx);
 
        Vector2 seed = randomPoint(bounds);
@@ -22,13 +22,13 @@ std::vector<Vector2> PoissonDiscSampler::generateSamples(const Box &bounds,
         grid.setSample(g, 0);
 
         while (!activeList.empty()) {
-            int randidx = (int)Math::IntervalRandom(0, (int)activeList.size() - 1);
+            int randidx = (int)MathFuncs::IntervalRandom(0, (int)activeList.size() - 1);
             int pidx = activeList[randidx];
            Vector2 p = points[pidx];
 
            Vector2 newPoint;
 
-           real nr =Math::IntervalRandom(r * 0.2f, r);
+           float nr =MathFuncs::IntervalRandom(r * 0.2f, r);
 
             bool isFound = findDiscPoint(p, nr, k, points, grid, &newPoint);
 
@@ -49,19 +49,19 @@ std::vector<Vector2> PoissonDiscSampler::generateSamples(const Box &bounds,
     }
 
    Vector2 PoissonDiscSampler::randomPoint(const Box &extents) {
-       real px =Math::IntervalRandom(extents.vMin.x, extents.vMax.x);
-       real py =Math::IntervalRandom(extents.vMin.y, extents.vMax.y);
+       float px =MathFuncs::IntervalRandom(extents.vMin.x, extents.vMax.x);
+       float py =MathFuncs::IntervalRandom(extents.vMin.y, extents.vMax.y);
         return Vector2(px, py);
     }
 
-   Vector2 PoissonDiscSampler::randomDiscPoint(const Vector2 &center,real r) {
-       real angle =Math::IntervalRandom(0.0f, 2 *Math::PI);
-       real rl =Math::IntervalRandom(r, 2 * r);
+   Vector2 PoissonDiscSampler::randomDiscPoint(const Vector2 &center,float r) {
+       float angle =MathFuncs::IntervalRandom(0.0f, 2 *MathFuncs::PI);
+       float rl =MathFuncs::IntervalRandom(r, 2 * r);
        Vector2 vDir =Vector2(sin(angle), cos(angle));
         return center + vDir * rl;
     }
 
-    bool PoissonDiscSampler::findDiscPoint(const Vector2 &center,real r, int k,
+    bool PoissonDiscSampler::findDiscPoint(const Vector2 &center,float r, int k,
         const std::vector<Vector2> &points,
         SampleGrid &grid,Vector2 *p) {
         for (int i = 0; i < k; i++) {
@@ -79,7 +79,7 @@ std::vector<Vector2> PoissonDiscSampler::generateSamples(const Box &bounds,
         return false;
     }
 
-    bool PoissonDiscSampler::isSampleValid(const Vector2 &p,real r,
+    bool PoissonDiscSampler::isSampleValid(const Vector2 &p,float r,
         const std::vector<Vector2> &points,
         SampleGrid &grid) {
        Vector2i g = grid.getCell(p);
@@ -91,7 +91,7 @@ std::vector<Vector2> PoissonDiscSampler::generateSamples(const Box &bounds,
        Vector2i vMin =Vector2i((int)fmax(g.x - 2, 0), (int)fmax(g.y - 2, 0));
        Vector2i vMax =Vector2i((int)fmin(g.x + 2, grid.vSize.x - 1), (int)fmin(g.y + 2, grid.vSize.y - 1));
 
-       real rsq = r * r;
+       float rsq = r * r;
         for (int j = vMin.y; j <= vMax.y; j++) {
             for (int i = vMin.x; i <= vMax.x; i++) {
                 sampleid = grid.getSample(i, j);
@@ -101,7 +101,7 @@ std::vector<Vector2> PoissonDiscSampler::generateSamples(const Box &bounds,
 
                Vector2 o = points[sampleid];
                Vector2 dv = p - o;
-               real distsq = dv.lenSqr();
+               float distsq = dv.lenSqr();
 
                 if (distsq < rsq) {
                     return false;

@@ -17,16 +17,16 @@ namespace Graph_Geometry {
     {
     public:
         struct StVoronoiGridData {
-            real fDist;
+            float fDist;
             int nLabel;
-            StVoronoiGridData(real _fDist, int _nLabel)
+            StVoronoiGridData(float _fDist, int _nLabel)
                 :fDist(_fDist), nLabel(_nLabel) {}
         };
 
         explicit Voronoi(const Vector3i &vSize = Vector3i(1, 1, 1));
         virtual ~Voronoi();
 
-        void genVoronoiMulLevel(int nCellNumber, int nLevel, real& fMinDist, real& fMaxDist);
+        void genVoronoiMulLevel(int nCellNumber, int nLevel, float& fMinDist, float& fMaxDist);
         void genVoronoiKnn(int nCellNumber, int nLevel = 0);
         GraphGeometry voronoi(std::vector<Vector2> &points);
         GraphGeometry delaunayToVoronoi(GraphGeometry &T);
@@ -42,7 +42,7 @@ namespace Graph_Geometry {
             return x + y * m_vSize.x;
         }
 
-        real getValue(int x, int y) {
+        float getValue(int x, int y) {
             if (x < 0 || x >= m_vSize.x || y < 0 || y >= m_vSize.y) return 0.f;
             return m_vData[x][y].fDist;
         }
@@ -75,7 +75,7 @@ namespace Graph_Geometry {
         int m_nVolume;
         //voronoi params
         fast_noise_lite::FastNoiseLite noiseLite;
-        std::vector<std::vector<real>> m_gridNoise;
+        std::vector<std::vector<float>> m_gridNoise;
 
         std::vector<Vector3> m_vCenters[Voronoi_Cell_Level];
         std::vector<int> m_vCenterNumber;

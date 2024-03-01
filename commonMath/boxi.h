@@ -1,7 +1,6 @@
-#ifndef BOXI_H
-#define BOXI_H
+#pragma once
 
-#include "vector3i.h"
+#include "commonMath/vector3i.h"
 
 class Boxi
 {
@@ -12,6 +11,10 @@ public:
 
     inline bool operator == (const Boxi &v) const {
         return (vMin == v.vMin && vMax == v.vMax);
+    }
+
+    inline bool operator != (const Boxi &v) const {
+        return (vMin != v.vMin || vMax != v.vMax);
     }
 
     bool contains(const Boxi &box) {
@@ -81,4 +84,4 @@ public:
     Vector3i vMin, vMax;
 };
 
-#endif
+

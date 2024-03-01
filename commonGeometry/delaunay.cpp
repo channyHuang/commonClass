@@ -1,12 +1,13 @@
 #include "delaunay.h"
 
 namespace Graph_Geometry {
-    GraphGeometry Delaunay::triangulate(std::vector<Vector2> &points) {
+    GraphGeometry Delaunay::triangulate(std::vector<Vector2>& points) {
         if (points.size() == 0) {
             return GraphGeometry();
         }
 
         GraphGeometry T = initTriangulation(points);
+
         while (!points.empty()) {
             Vector2 p = points.back();
             points.pop_back();
@@ -15,7 +16,7 @@ namespace Graph_Geometry {
             if (f.id != -1) {
                 insertPointIntoTriangulation(p, f, T);
 
-                mapIndex[T.vertices.size() - 1] = points.size();
+                m_mapIn2outIndex[T.vertices.size() - 1] = points.size();
             }
         }
 
@@ -26,11 +27,11 @@ namespace Graph_Geometry {
 
     void Delaunay::getSuperTriangle(const std::vector<Vector2> &points,
         Vector2 *p1, Vector2 *p2, Vector2 *p3) {
-        real eps = 1e-3f;
-        real minx = points[0].x;
-        real miny = points[0].y;
-        real maxx = minx + eps;
-        real maxy = miny + eps;
+        float eps = 1e-3f;
+        float minx = points[0].x;
+        float miny = points[0].y;
+        float maxx = minx + eps;
+        float maxy = miny + eps;
 
         for (unsigned int i = 0; i < points.size(); i++) {
             Vector2 p = points[i];
@@ -40,7 +41,7 @@ namespace Graph_Geometry {
             if (p.y > maxy) { maxy = p.y; }
         }
 
-        real expand = fmax(0.1f * (maxx - minx), 0.1f * (maxy - miny));
+        float expand = fmax(0.1f * (maxx - minx), 0.1f * (maxy - miny));
         minx -= expand;
         miny -= 5 * expand;
         maxx += expand;
@@ -49,7 +50,7 @@ namespace Graph_Geometry {
         p1->x = 0.5f * (minx + maxx);
         p1->y = maxy + 0.5f * (maxy - miny);
 
-        real m = (maxy - p1->y) / (maxx - p1->x);
+        float m = (maxy - p1->y) / (maxx - p1->x);
         p2->x = (1.0f / m) * (miny - p1->y + m * p1->x);
         p2->y = miny;
 
@@ -185,9 +186,9 @@ namespace Graph_Geometry {
         Vector2 p1 = T.origin(h).vPos;
         Vector2 p2 = T.origin(T.next(h)).vPos;
 
-        real area = 0.5f * (-p1.y*p2.x + p0.y*(-p1.x + p2.x) + p0.x*(p1.y - p2.y) + p1.x*p2.y);
-        real s = 1.0f / (2.0f * area)*(p0.y*p2.x - p0.x*p2.y + (p2.y - p0.y)*p.x + (p0.x - p2.x)*p.y);
-        real t = 1.0f / (2.0f * area)*(p0.x*p1.y - p0.y*p1.x + (p0.y - p1.y)*p.x + (p1.x - p0.x)*p.y);
+        float area = 0.5f * (-p1.y*p2.x + p0.y*(-p1.x + p2.x) + p0.x*(p1.y - p2.y) + p1.x*p2.y);
+        float s = 1.0f / (2.0f * area)*(p0.y*p2.x - p0.x*p2.y + (p2.y - p0.y)*p.x + (p0.x - p2.x)*p.y);
+        float t = 1.0f / (2.0f * area)*(p0.x*p1.y - p0.y*p1.x + (p0.y - p1.y)*p.x + (p1.x - p0.x)*p.y);
 
         return s >= 0 && t >= 0 && 1 - s - t >= 0;
     }
@@ -198,7 +199,7 @@ namespace Graph_Geometry {
         Vector2 p1 = T.origin(T.next(h)).vPos;
         Vector2 p2 = T.origin(T.prev(h)).vPos;
 
-        real frac = 1.0f / 3.0f;
+        float frac = 1.0f / 3.0f;
         return Vector2(frac*(p0.x + p1.x + p2.x), frac*(p0.y + p1.y + p2.y));
     }
 
@@ -206,28 +207,28 @@ namespace Graph_Geometry {
         const HalfEdge &h, GraphGeometry &T) {
         Vector2 C = T.origin(h).vPos;
         Vector2 D = T.origin(T.twin(h)).vPos;
-        return lineSegmentIntersection(A, B, C, D);
+        return GeometryMath::lineSegmentIntersection(A, B, C, D);
     }
 
-    real Delaunay::pointToEdgeDistance(Vector2 &p0, HalfEdge &h, GraphGeometry &T) {
+    float Delaunay::pointToEdgeDistance(Vector2 &p0, HalfEdge &h, GraphGeometry &T) {
         Vector2 p1 = T.origin(h).vPos;
         Vector2 p2 = T.origin(T.twin(h)).vPos;
 
-        real vx = p2.x - p1.x;
-        real vy = p2.y - p1.y;
-        real len = sqrt(vx*vx + vy * vy);
+        float vx = p2.x - p1.x;
+        float vy = p2.y - p1.y;
+        float len = sqrt(vx*vx + vy * vy);
 
         return fabs((vx*(p1.y - p0.y) - (p1.x - p0.x)*vy) / len);
     }
 
     void Delaunay::insertPointIntoTriangulation(Vector2 p, Face f, GraphGeometry &T) {
-        real eps = 1e-9f;
+        float eps = 1e-9f;
         int closeEdgeCount = 0;
         HalfEdge closeEdge;
 
         HalfEdge h = T.outerComponent(f);
         for (int i = 0; i < 3; i++) {
-            real dist = pointToEdgeDistance(p, h, T);
+            float dist = pointToEdgeDistance(p, h, T);
             if (dist < eps) {
                 closeEdge = h;
                 closeEdgeCount++;
@@ -510,18 +511,18 @@ namespace Graph_Geometry {
         Vector2 s(-(p0.y - pi.y), p0.x - pi.x);
 
         Vector2 center;
-        bool isIntersection = lineIntersection(p, r, q, s, &center);
+        bool isIntersection = GeometryMath::lineIntersection(p, r, q, s, &center);
         if (!isIntersection) {
             return false;
         }
 
-        real dvx = p0.x - center.x;
-        real dvy = p0.y - center.y;
-        real crsq = dvx * dvx + dvy * dvy;
+        float dvx = p0.x - center.x;
+        float dvy = p0.y - center.y;
+        float crsq = dvx * dvx + dvy * dvy;
 
-        real dkx = pk.x - center.x;
-        real dky = pk.y - center.y;
-        real distsq = dkx * dkx + dky * dky;
+        float dkx = pk.x - center.x;
+        float dky = pk.y - center.y;
+        float distsq = dkx * dkx + dky * dky;
 
         return distsq >= crsq;
     }

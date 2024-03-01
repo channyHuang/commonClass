@@ -13,27 +13,27 @@ class Vector3i
 public:
     union {
         struct {
-            int64_t x, y, z;
+            int x, y, z;
         };
-        int64_t data[3];
+        int data[3];
     };
 
-    const int64_t &operator[](const int axis) const {
+    const int &operator[](const int axis) const {
         return data[axis];
     }
 
-    inline int64_t &operator[](const int axis) {
+    inline int &operator[](const int axis) {
         return data[axis];
     }
 
     Vector3i() : x(0), y(0), z(0) {}
-    Vector3i(const int64_t v) : x(v), y(v), z(v) {}
-    Vector3i(const int64_t _x, const int64_t _y, const int64_t _z) : x(_x), y(_y), z(_z) {}
+    Vector3i(const int v) : x(v), y(v), z(v) {}
+    Vector3i(const int _x, const int _y, const int _z) : x(_x), y(_y), z(_z) {}
     Vector3i(const Vector3i &v) : x(v.x), y(v.y), z(v.z) {}
     Vector3i(const Vector3 &v) {
-        x = static_cast<int64_t>(std::floor(v.x));
-        y = static_cast<int64_t>(std::floor(v.y));
-        z = static_cast<int64_t>(std::floor(v.z));
+        x = static_cast<int>(std::floor(v.x));
+        y = static_cast<int>(std::floor(v.y));
+        z = static_cast<int>(std::floor(v.z));
     }
 
     ~Vector3i() {}
@@ -50,7 +50,7 @@ public:
         return x == v.x && y == v.y && z == v.z;
     }
 
-    inline bool operator!=(const Vector3i &v) {
+    inline bool operator!=(const Vector3i &v) const {
         return x != v.x || y != v.y || z != v.z;
     }
 
@@ -85,19 +85,19 @@ public:
         return Vector3i (x * v.x, y * v.y, z * v.z);
     }
 
-    Vector3i operator+(const int64_t v) {
+    Vector3i operator+(const int v) {
         return *this + Vector3i(v);
     }
 
-    Vector3i operator-(const int64_t v) {
+    Vector3i operator-(const int v) {
         return *this - Vector3i(v);
     }
 
-    Vector3i operator/(const int64_t v) {
+    Vector3i operator/(const int v) {
         return *this / Vector3i(v);
     }
 
-    Vector3i operator*(const int64_t v) const {
+    Vector3i operator*(const int v) const {
         return Vector3i(x * v, y * v, z * v);
     }
 
@@ -109,7 +109,7 @@ public:
         return Vector3i(y * v.z - z * v.y, x * v.z - z * v.x, x * v.y - y * v.x);
     }
 
-    int64_t volumn() {
+    int volumn() {
         return x * y * z;
     }
 
@@ -137,7 +137,7 @@ public:
         return str;
     }
 
-    inline uint64_t get_zxy_index(const Vector3i area_size) const {
+    inline unsigned int get_zxy_index(const Vector3i area_size) const {
         return y + area_size.y * (x + area_size.x * z); // ZXY
     }
 
@@ -147,21 +147,19 @@ public:
 
     static void sort_min_max(Vector3i &a, Vector3i &b) {
         if (a.x > b.x) {
-            int v = a.x;
+            int tmp = a.x;
             a.x = b.x;
-            b.x = v;
+            b.x = tmp;
         }
-
         if (a.y > b.y) {
-            int v = a.y;
+            int tmp = a.y;
             a.y = b.y;
-            b.y = v;
+            b.y = tmp;
         }
-
         if (a.z > b.z) {
-            int v = a.z;
+            int tmp = a.z;
             a.z = b.z;
-            b.z = v;
+            b.z = tmp;
         }
     }
 
@@ -205,7 +203,7 @@ inline Vector3i operator<<(const Vector3i &a, int b) {
     return Vector3i(a.x << b, a.y << b, a.z << b);
 }
 
-inline Vector3i operator*(const int64_t p_scalar, const Vector3i &p_vec) {
+inline Vector3i operator*(const int p_scalar, const Vector3i &p_vec) {
     return p_vec * p_scalar;
 }
 

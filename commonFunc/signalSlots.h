@@ -1,11 +1,9 @@
-#ifndef SIGNALSLOTS_H
-#define SIGNALSLOTS_H
-
+#pragma once
 #include <functional>
 #include <memory>
 #include <vector>
 
-namespace SignalSlots
+namespace SignalSlot
 {
     template<class Return, class Type, class... Args>
     std::function<Return(Args...)> bind_member(Type* instance, Return(Type::*method)(Args...))
@@ -20,9 +18,9 @@ namespace SignalSlots
     class SignalImpl
     {
     public:
-        std::shared_ptr<SlotImplType> t;
-        std::vector<std::shared_ptr<SlotImplType>> vSlots;
+        std::vector<std::shared_ptr<SlotImplType>> slots;
     };
+
 
     class SlotImpl
     {
@@ -36,6 +34,7 @@ namespace SignalSlots
         SlotImpl& operator= (const SlotImpl&) = delete;
     };
 
+
     template<class FuncType>
     class SlotImplT : public SlotImpl
     {
@@ -48,13 +47,15 @@ namespace SignalSlots
 
         ~SlotImplT()
         {
-            std::shared_ptr<SignalImpl<SlotImplT> > sig = signal;
+            std::shared_ptr<SignalImpl<SlotImplT>> sig = signal/*.lock()*/;
             if ( sig == nullptr ) return;
 
-            for ( auto it = sig->vSlots.begin(); it != sig->vSlots.end(); ++it ) {
-                it = sig->vSlots.erase(it);
-                if ( it == sig->vSlots.end() ) {
-                    break;
+            for ( auto it = sig->slots.begin(); it != sig->slots.end(); ++it ) {
+                if ( /*it->expired() || it->lock().get() == this*/true ) {
+                    it = sig->slots.erase(it);
+                    if ( it == sig->slots.end() ) {
+                        break;
+                    }
                 }
             }
         }
@@ -83,22 +84,19 @@ namespace SignalSlots
     };
 
 
-    //---------------------------------------------------------------------
-    // Signal
-    //---------------------------------------------------------------------
     template<class FuncType>
     class Signal
     {
     public:
-        Signal() : impl(std::make_shared<SignalImpl<SlotImplT<FuncType> > >()) {}
+        Signal() : impl(std::make_shared<SignalImpl<SlotImplT<FuncType>>>()) {}
 
         template<class... Args>
         void operator()(Args&&... args)
         {
-            std::vector<std::shared_ptr<SlotImplT<FuncType>>> slotVector = impl->vSlots;
+            std::vector<std::shared_ptr<SlotImplT<FuncType>>> slotVector = impl->slots;
             for ( std::shared_ptr<SlotImplT<FuncType>>& weak_slot : slotVector )
             {
-                std::shared_ptr<SlotImplT<FuncType>> slot = weak_slot;
+                std::shared_ptr<SlotImplT<FuncType>> slot = weak_slot/*.lock()*/;
                 if ( slot ) {
                     slot->callback(std::forward<Args>(args)...);
                 }
@@ -109,7 +107,7 @@ namespace SignalSlots
         {
             std::shared_ptr<SlotImplT<FuncType>> slotImpl = std::make_shared<SlotImplT<FuncType>>(impl, func);
 
-            impl->vSlots.push_back(slotImpl);
+            impl->slots.push_back(slotImpl);
 
             return Slot(slotImpl);
         }
@@ -120,9 +118,11 @@ namespace SignalSlots
             return connect(bind_member(instance, func));
         }
 
+        int getSlotSize() {
+            return impl->slots.size();
+        }
+
     private:
         std::shared_ptr<SignalImpl<SlotImplT<FuncType>>> impl;
     };
 }
-
-#endif

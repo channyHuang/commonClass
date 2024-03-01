@@ -10,8 +10,8 @@
 #include <cmath>
 #include <random>
 
-#include "vector3.h"
-#include "math_funcs.h"
+#include "commonMath/vector3.h"
+#include "funcs.h"
 #include <functional>
 
 // <Zylann> Added namespace to avoid conflict with Godot class
@@ -2488,7 +2488,7 @@ public:
             // better
             // random spherical coordinates to Cartesian coordinates
             float theta = acos(2 * dice() - 1);
-            float phi = 2 * dice() * Math::PI;
+            float phi = 2 * dice() * MathFuncs::PI;
 
             float x = cos(phi) * sin(theta);
             float y = sin(phi) * sin(theta);
@@ -2616,15 +2616,15 @@ public:
         Vector3 p111 = Vector3(x1, y1, z1);
 
         // linear interpolation
-        float a = Math::Lerp(c000.dot(p000), c100.dot(p100), u);
-        float b = Math::Lerp(c010.dot(p010), c110.dot(p110), u);
-        float c = Math::Lerp(c001.dot(p001), c101.dot(p101), u);
-        float d = Math::Lerp(c011.dot(p011), c111.dot(p111), u);
+        float a = MathFuncs::Lerp(c000.dot(p000), c100.dot(p100), u);
+        float b = MathFuncs::Lerp(c010.dot(p010), c110.dot(p110), u);
+        float c = MathFuncs::Lerp(c001.dot(p001), c101.dot(p101), u);
+        float d = MathFuncs::Lerp(c011.dot(p011), c111.dot(p111), u);
 
-        float e = Math::Lerp(a, b, v);
-        float f = Math::Lerp(c, d, v);
+        float e = MathFuncs::Lerp(a, b, v);
+        float f = MathFuncs::Lerp(c, d, v);
 
-        return Math::Lerp(e, f, w); // g
+        return MathFuncs::Lerp(e, f, w); // g
     }
 
     /*

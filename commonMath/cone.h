@@ -3,7 +3,7 @@
 
 #include "vector3.h"
 #include "boxi.h"
-#include "math_funcs.h"
+#include "funcs.h"
 
 class Cone
 {

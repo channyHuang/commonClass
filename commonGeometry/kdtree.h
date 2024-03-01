@@ -4,10 +4,10 @@
 #include <vector>
 #include "commonMath/vector3.h"
 #include "commonMath/box.h"
-#include "commonMath/math_funcs.h"
+#include "commonMath/funcs.h"
 
 #define ERR 0.001
-#define MAXERR ((1 + ERR) * Math::EPSILON)
+#define MAXERR ((1 + ERR) * MathFuncs::EPSILON)
 
 class KdTreeNode {
 public:

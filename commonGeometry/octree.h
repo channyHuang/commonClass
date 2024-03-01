@@ -1,9 +1,8 @@
 #ifndef OCTREE_H
 #define OCTREE_H
 
-#include <unordered_map>
-
 #include "commonMath/vector3.h"
+#include <unordered_map>
 
 enum class AXIS3D : uint8_t {
     AXIS3D_NXNYNZ,

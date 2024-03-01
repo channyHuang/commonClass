@@ -17,15 +17,15 @@ namespace Graph_Geometry {
     Voronoi::~Voronoi() {}
 
     void Voronoi::genRandomCenters(int nCellNumber, int nLevel) {
-        m_nCellLevel = Math::Clamp(nLevel, 1, Voronoi_Cell_Level);
+        m_nCellLevel = MathFuncs::Clamp(nLevel, 1, Voronoi_Cell_Level);
 
-        m_gridNoise.resize(m_vSize.x, std::vector<real>(m_vSize.z, 0));
+        m_gridNoise.resize(m_vSize.x, std::vector<float>(m_vSize.z, 0));
         {
 #pragma omp parallel for num_threads(30)
             for (int i = 0; i < m_nMeshSize; i++) {
                 int y = i / m_vSize.x;
                 int x = i % m_vSize.x;
-                m_gridNoise[x][y] = noiseLite.GetNoise<real>((real)x, (real)y);
+                m_gridNoise[x][y] = noiseLite.GetNoise<float>((float)x, (float)y);
             }
         }
 
@@ -35,7 +35,7 @@ namespace Graph_Geometry {
         for (int l = 0; l < m_nCellLevel; l++) {
             m_vCenters[l].resize(nLevelNumber);
             for (int i = 0; i < nLevelNumber; i++) {
-                Vector2 vCenter = randomPoint(Boxi(Vector3i(0, 0, 0), m_vSize));
+                Vector2 vCenter = GeometryMath::randomPoint(Boxi(Vector3i(0, 0, 0), m_vSize));
 
                 m_vCenters[l][i].x = vCenter.x;
                 m_vCenters[l][i].z = vCenter.y;
@@ -44,23 +44,23 @@ namespace Graph_Geometry {
         }
     }
 
-    void Voronoi::genVoronoiMulLevel(int nCellNumber, int nLevel, real& fMinDist, real& fMaxDist) {
+    void Voronoi::genVoronoiMulLevel(int nCellNumber, int nLevel, float& fMinDist, float& fMaxDist) {
         genRandomCenters(nCellNumber, nLevel);
 
         fMaxDist = 0;
-        fMinDist = (real)m_vSize.lenSqr();
+        fMinDist = (float)m_vSize.lenSqr();
 
 #pragma omp parallel for
         for (int i = 0; i < m_nMeshSize; i++) {
             int y = i / m_vSize.x;
             int x = i % m_vSize.x;
 
-            Vector3 target = Vector3((real)x, (real)y, 0);
+            Vector3 target = Vector3((float)x, (float)y, 0);
             for (int l = nLevel - 1; l >= 0; l--) {
-                real dmin = (real)m_nVolume;
+                float dmin = (float)m_nVolume;
                 int j = 0;
                 for (unsigned int i = 0; i < m_vCenters[l].size(); i++) {
-                    real dist = m_vCenters[l][i].distanceTo(target);
+                    float dist = m_vCenters[l][i].distanceTo(target);
                     dist += m_gridNoise[x][y];
 
                     if (dist < dmin) {
@@ -70,7 +70,7 @@ namespace Graph_Geometry {
                 }
 
                 if (l == 0) {
-                    real dist = m_vCenters[l][j].distanceTo(Vector3((real)x, (real)y, 0));
+                    float dist = m_vCenters[l][j].distanceTo(Vector3((float)x, (float)y, 0));
                     dist += m_gridNoise[(int)target.x][(int)target.y];
 
                     fMaxDist = std::max(fMaxDist, dist);
@@ -87,20 +87,20 @@ namespace Graph_Geometry {
     void Voronoi::genVoronoiKnn(int nCellNumber, int nLevel) {
         genRandomCenters(nCellNumber, nLevel + 1);
         unsigned int k = 1;
-        std::vector<real> coeffs{ -1, 1 };
+        std::vector<float> coeffs{ -1, 1 };
         KdTree tree(m_vCenters[nLevel], (int)m_vCenters[nLevel].size());
         std::vector<int> vLabel;
-        std::vector<real> vDist;
+        std::vector<float> vDist;
 
         int idx = m_nMeshSize;
-        real fMaxDist = 0;
-        real fMinDist = Math::POS_INFINITY;
+        float fMaxDist = 0;
+        float fMinDist = MathFuncs::POS_INFINITY;
         while (idx) {
             int x = idx % m_vSize.x;
             int y = idx / m_vSize.z;
-            tree.knnSearch(Vector3((real)x, (real)y, 0), 3, vLabel, vDist);
+            tree.knnSearch(Vector3((float)x, (float)y, 0), 3, vLabel, vDist);
 
-            real fPixelValue = 0;
+            float fPixelValue = 0;
             //vLabel[i]: label, vDist[i]: distance
             for (unsigned int i = 0; i < k; i++) {			// print summary
                 //dists[i] = sqrt(dists[i]);			// unsquare distance
@@ -121,7 +121,7 @@ namespace Graph_Geometry {
 
         for (int x = 0; x < m_vSize.x; x++) {
             for (int y = 0; y < m_vSize.z; y++) {
-                real fPixelValue = m_vData[x][y].fDist;
+                float fPixelValue = m_vData[x][y].fDist;
                 fPixelValue -= fMinDist;
                 fPixelValue /= (fMaxDist - fMinDist);
                 fPixelValue = 256 * (1 - fPixelValue);
@@ -202,7 +202,7 @@ namespace Graph_Geometry {
         Vector2 s(-(p0.y - pi.y), p0.x - pi.x);
 
         Vector2 center;
-        bool isIntersection = lineIntersection(p, r, q, s, &center);
+        bool isIntersection = GeometryMath::lineIntersection(p, r, q, s, &center);
         if (!isIntersection) {
             return p0;
         }

@@ -19,7 +19,7 @@ void TreeSplit::knnSearch(const Vector3 &vTarget, int k, std::vector<int>& vLabe
             fBoundDiff = 0;
         }
         fBoxDist += (diff * diff - fBoundDiff * fBoundDiff);
-        if (fBoundDiff * Math::EPSILON < (vDist.size() == k ? vDist[k - 1] : Math::POS_INFINITY)) {
+        if (fBoundDiff * MathFuncs::EPSILON < (vDist.size() == k ? vDist[k - 1] : MathFuncs::POS_INFINITY)) {
             m_pHigh->knnSearch(vTarget, k, vLabel, vDist, fBoxDist);
         }
     } else {
@@ -29,14 +29,14 @@ void TreeSplit::knnSearch(const Vector3 &vTarget, int k, std::vector<int>& vLabe
             fBoundDiff = 0;
         }
         fBoxDist += (diff * diff - fBoundDiff * fBoundDiff);
-        if (fBoundDiff * Math::EPSILON < (vDist.size() == k ? vDist[k - 1] : Math::POS_INFINITY)) {
+        if (fBoundDiff * MathFuncs::EPSILON < (vDist.size() == k ? vDist[k - 1] : MathFuncs::POS_INFINITY)) {
             m_pLow->knnSearch(vTarget, k, vLabel, vDist, fBoxDist);
         }
     }
 }
 
 void TreeLeaf::knnSearch(const Vector3 &vTarget, unsigned int k, std::vector<int>& vLabel, std::vector<float>& vDist, float fBoxDist) {
-    float fMinDist = (vDist.size() == k ? vDist[k - 1] : Math::POS_INFINITY);
+    float fMinDist = (vDist.size() == k ? vDist[k - 1] : MathFuncs::POS_INFINITY);
     for (int i = m_nStPos, d; i <= m_nEndPos; i++) {
         float dist = 0;
         for (d = 0; d < 3; d++) {
@@ -160,7 +160,7 @@ void KdTree::splitter(int nLabelStPos, int nLabelEndPos,
     float maxSpread = -1;
     //calculate nCuttingDim
     for (int i = 0; i < 3; i++) {
-        if ((stBoundingBox.vMax[i] - stBoundingBox.vMin[i]) < (1 - Math::LOWEPSILON) * fMaxLength) continue;
+        if ((stBoundingBox.vMax[i] - stBoundingBox.vMin[i]) < (1 - MathFuncs::LOWEPSILON) * fMaxLength) continue;
         float spread = calcSpread(nLabelStPos, nLabelEndPos, i);
         if (spread > maxSpread) {
             maxSpread = spread;

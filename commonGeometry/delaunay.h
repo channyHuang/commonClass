@@ -6,12 +6,11 @@
 #include <math.h>
 #include <vector>
 #include <stdlib.h>
+#include <unordered_map>
 
 #include "commonMath/vector2.h"
-#include "graphgeometry.h"
-#include "geometrymath.h"
-
-#include <unordered_map>
+#include "commonGeometry/graphgeometry.h"
+#include "commonGeometry/geometrymath.h"
 
 namespace Graph_Geometry {
     class Delaunay {
@@ -20,7 +19,7 @@ namespace Graph_Geometry {
 
         GraphGeometry triangulate(std::vector<Vector2> &points);
 
-        std::unordered_map<int, int> mapIndex;
+        std::unordered_map<int, int> m_mapIn2outIndex;
 
     private:
         void getSuperTriangle(const std::vector<Vector2> &points,
@@ -30,7 +29,7 @@ namespace Graph_Geometry {
         Vector2 computeTriangleCentroid(const Face &f, GraphGeometry &T);
         bool isSegmentIntersectingEdge(const Vector2 &p0, const Vector2 &p1, const HalfEdge &h, GraphGeometry &T);
         bool isPointInsideTriangle(const Vector2 &p, const Face &f, GraphGeometry &T);
-        real pointToEdgeDistance(Vector2 &p, HalfEdge &h, GraphGeometry &T);
+        float pointToEdgeDistance(Vector2 &p, HalfEdge &h, GraphGeometry &T);
         void insertPointIntoTriangulation(Vector2 p, Face f, GraphGeometry &T);
         void insertPointIntoTriangle(Vector2 p, Face f, GraphGeometry &T);
         void insertPointIntoTriangleEdge(Vector2 p, Face f, HalfEdge h, GraphGeometry &T);

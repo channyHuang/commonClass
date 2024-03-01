@@ -8,7 +8,6 @@
 namespace Graph_Geometry {
 class GraphGeometry
 {
-    typedef float real;
 public:
     GraphGeometry() {}
     ~GraphGeometry() {}
@@ -17,7 +16,7 @@ public:
         return createVertex(p.x, p.y);
     }
 
-    inline Vertex2D const createVertex(real px, real py) {
+    inline Vertex2D const createVertex(float px, float py) {
         Vertex2D vert(px, py);
         vert.id = (int)vertices.size();
         vertices.push_back(vert);

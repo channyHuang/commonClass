@@ -7,10 +7,10 @@
 #include "commonMath/vector2.h"
 #include "commonMath/vector3.h"
 #include "commonMath/vector3i.h"
-#include "commonMath/math_funcs.h"
+#include "commonMath/funcs.h"
 #include "commonMath/boxi.h"
 
-typedef float real;
+namespace GeometryMath {
 
 static std::vector<Vector3> vDir8Corner = {
     {1, 1, 1}, {1, -1, 1}, {-1, -1, 1}, {-1, 1, 1},
@@ -22,12 +22,12 @@ static std::vector<Vector3> vCubeVer = {
 };
 static std::vector<Vector3> vAxes = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1} };
 
-inline real volumn(const Vector3 &vec) {
+inline float volumn(const Vector3 &vec) {
     return vec.x * vec.y * vec.z;
 }
 
 inline Vector3 vertexInterp(const Vector3 &p1, const Vector3 &p2, float weightP1, float weightP2) {
-    if (std::abs(weightP2 - weightP1) < Math::EPSILON) {
+    if (std::abs(weightP2 - weightP1) < MathFuncs::EPSILON) {
         return (p1 + p2) * 0.5f;
     }
     return (p1 + (p2 - p1) * (-weightP1 / (weightP2 - weightP1)));
@@ -56,9 +56,9 @@ inline int minAbsAxis(const Vector3 &vec) {
     return (vAbsVec.x < vAbsVec.y ? (vAbsVec.x < vAbsVec.z ? 0 : 2) : (vAbsVec.y < vAbsVec.z ? 1 : 2));
 }
 
-inline real minDistToCube(const Vector3 &vec, const Box &box) {
+inline float minDistToCube(const Vector3 &vec, const Box &box) {
     Vector3 vDist;
-    real res = -1;
+    float res = -1;
     for (int i = 0; i < 3; i++) {
         vDist[i] = vec[i] <= box.vMin[i] ? box.vMin[i] - vec[i] : (vec[i] >= box.vMax[i] ? vec[i] - box.vMax[i] : std::fmax(box.vMin[i] - vec[i], vec[i] - box.vMax[i]));
         if (vDist[i] > 0) {
@@ -71,11 +71,11 @@ inline real minDistToCube(const Vector3 &vec, const Box &box) {
     return vDist[dim];
 }
 
-inline real sign(const real& val) {
+inline float sign(const float& val) {
     return (val < 0 ? -1.0f : val > 0 ? +1.0f : 0);
 }
 
-inline bool isFinite(const real t) {
+inline bool isFinite(const float t) {
     return std::isfinite(t) && !std::isnan(t);
 }
 
@@ -99,7 +99,7 @@ static void sort_min_max(Vector3& a, Vector3& b) {
 }
 
 inline bool equalToZero(float v) {
-    return (v <= Math::EPSILON || -v >= Math::EPSILON);
+    return (v <= MathFuncs::EPSILON || -v >= MathFuncs::EPSILON);
 }
 
 //2d point a - b - c is anti cross wise
@@ -140,17 +140,17 @@ static int PointInConvexPolygon(const Vector2 &p, int n, const std::vector<Vecto
 inline bool lineIntersection(const Vector2 &p, const Vector2 &r,
     const Vector2 &q, const Vector2 &s,
     Vector2 *intersect) {
-    real cross = r.x*s.y - r.y*s.x;
+    float cross = r.x*s.y - r.y*s.x;
 
-    real eps = 1e-9f;
-    if (fabs(cross) < eps) {
+    float eps = 1e-9f;
+    if (fabsf(cross) < eps) {
         // parallel case
         return false;
     }
 
-    real vx = q.x - p.x;
-    real vy = q.y - p.y;
-    real t = (vx*s.y - vy * s.x) / cross;
+    float vx = q.x - p.x;
+    float vy = q.y - p.y;
+    float t = (vx*s.y - vy * s.x) / cross;
 
     intersect->x = p.x + t * r.x;
     intersect->y = p.y + t * r.y;
@@ -159,28 +159,28 @@ inline bool lineIntersection(const Vector2 &p, const Vector2 &r,
 }
 
 static Vector2 randomPoint(const Boxi &extents) {
-    real px = Math::IntervalRandom(extents.vMin.x, extents.vMax.x);
-    real py = Math::IntervalRandom(extents.vMin.y, extents.vMax.y);
+    float px = MathFuncs::IntervalRandom(extents.vMin.x, extents.vMax.x);
+    float py = MathFuncs::IntervalRandom(extents.vMin.y, extents.vMax.y);
 
     return Vector2(px, py);
 }
 
 static Vector2 randomPoint(const Box &extents) {
-    real px = Math::IntervalRandom(extents.vMin.x, extents.vMax.x);
-    real py = Math::IntervalRandom(extents.vMin.y, extents.vMax.y);
+    float px = MathFuncs::IntervalRandom(extents.vMin.x, extents.vMax.x);
+    float py = MathFuncs::IntervalRandom(extents.vMin.y, extents.vMax.y);
 
     return Vector2(px, py);
 }
 
 static Vector3 randomPoint3d(const Box &extents) {
-    real px = Math::IntervalRandom(extents.vMin.x, extents.vMax.x);
-    real py = Math::IntervalRandom(extents.vMin.y, extents.vMax.y);
-    real pz = Math::IntervalRandom(extents.vMin.z, extents.vMax.z);
+    float px = MathFuncs::IntervalRandom(extents.vMin.x, extents.vMax.x);
+    float py = MathFuncs::IntervalRandom(extents.vMin.y, extents.vMax.y);
+    float pz = MathFuncs::IntervalRandom(extents.vMin.z, extents.vMax.z);
     return Vector3(px, py, pz);
 }
 
 static Vector2 randomDirection() {
-    real angle = Math::IntervalRandom(0.0f, 2 * Math::PI);
+    float angle = MathFuncs::IntervalRandom(0.0f, 2 * MathFuncs::PI);
     return Vector2(sin(angle), cos(angle));
 }
 
@@ -197,11 +197,11 @@ inline bool lineSegmentIntersection(const Vector2 &A, const Vector2 &B,
 
 // Given segment ab and point c, computes closest point d on ab.
 // Also returns t for the position of d, d(t) = a + t*(b - a)
-inline real distancePointSegment(const Vector3 &c, const Vector3 &a, const Vector3 &b)
+inline float distancePointSegment(const Vector3 &c, const Vector3 &a, const Vector3 &b)
 {
     Vector3 ab = b - a;
     // Project c onto ab, computing parameterized position d(t) = a + t*(b ?a)
-    real t = (c - a).dot(ab) / ab.dot(ab);
+    float t = (c - a).dot(ab) / ab.dot(ab);
     // If outside segment, clamp t (and therefore d) to the closest endpoint
     if (t < 0.0f) t = 0.0f;
     if (t > 1.0f) t = 1.0f;
@@ -210,17 +210,19 @@ inline real distancePointSegment(const Vector3 &c, const Vector3 &a, const Vecto
     return vClosePoint.distanceTo(c);
 }
 
-inline real distancePointSegment(const Vector2 &c, const Vector2 &a, const Vector2 &b)
+inline float distancePointSegment(const Vector2 &c, const Vector2 &a, const Vector2 &b)
 {
     Vector2 ab = b - a;
     // Project c onto ab, computing parameterized position d(t) = a + t*(b ?a)
-    real t = (c - a).dot(ab) / ab.dot(ab);
+    float t = (c - a).dot(ab) / ab.dot(ab);
     // If outside segment, clamp t (and therefore d) to the closest endpoint
     if (t < 0.0f) t = 0.0f;
     if (t > 1.0f) t = 1.0f;
     // Compute projected position from the clamped t
     Vector2 vClosePoint = a + t * ab;
     return vClosePoint.distance(c);
+}
+
 }
 
 #endif

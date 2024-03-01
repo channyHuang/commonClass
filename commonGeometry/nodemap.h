@@ -7,7 +7,6 @@ namespace Graph_Geometry {
     //record height of each vertices in voronoi
     template <class T>
     class NodeMap {
-        typedef float real;
     public:
         NodeMap() {}
         NodeMap(VertexMap *vertexMap) : m_vertexMap(vertexMap) {
@@ -158,16 +157,16 @@ namespace Graph_Geometry {
 
         // Normalize height map values to range [0, 1]
         void normalize() {
-            real min = std::numeric_limits<real>::infinity();
-            real max = -std::numeric_limits<real>::infinity();
+            float min = std::numeric_limits<float>::infinity();
+            float max = -std::numeric_limits<float>::infinity();
             for (unsigned int i = 0; i < size(); i++) {
                 min = fmin(min, (*this)(i));
                 max = fmax(max, (*this)(i));
             }
 
             for (unsigned int i = 0; i < size(); i++) {
-                real val = (*this)(i);
-                real normalized = (val - min) / (max - min);
+                float val = (*this)(i);
+                float normalized = (val - min) / (max - min);
                 set(i, normalized);
             }
         }
@@ -176,17 +175,17 @@ namespace Graph_Geometry {
         void round() {
             normalize();
             for (unsigned int i = 0; i < size(); i++) {
-                real rounded = sqrt((*this)(i));
+                float rounded = sqrt((*this)(i));
                 set(i, rounded);
             }
         }
 
         //  Replace height with average of its neighbours
         void relax() {
-            std::vector<real> averages;
+            std::vector<float> averages;
             averages.reserve(size());
 
-            std::vector<real> nbs;
+            std::vector<float> nbs;
             for (unsigned int i = 0; i < size(); i++) {
                 nbs.clear();
                 getNeighbours(i, nbs);
@@ -194,7 +193,7 @@ namespace Graph_Geometry {
                     continue;
                 }
 
-                real sum = 0.0;
+                float sum = 0.0;
                 for (unsigned int nidx = 0; nidx < nbs.size(); nidx++) {
                     sum += nbs[nidx];
                 }
