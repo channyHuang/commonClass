@@ -1,6 +1,6 @@
 #pragma once
 
-#include <osg/referenced>
+#include <osg/Referenced>
 #include <osg/ref_ptr>
 #include <osg/PolygonMode>
 #include <osg/ShapeDrawable>
