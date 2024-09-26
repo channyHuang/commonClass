@@ -17,6 +17,14 @@ ${LIBRARY_FILES_C}
 ${LIBRARY_FILES_H}
 )
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+TARGET_LINK_LIBRARIES(commonOsg PRIVATE
+	imgui
+	GL
+	pthread
+)
+else()
 TARGET_LINK_LIBRARIES(commonOsg PRIVATE
 	imgui
 )
+endif()
