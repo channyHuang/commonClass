@@ -38,3 +38,5 @@
 **/*.suo
 **/*.db
 **/*.ipch
+
+.vscode
