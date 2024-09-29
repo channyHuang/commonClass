@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+typedef void (*CBFun_Callback)(const osg::Vec3& vPos, void* pUser);
+
 class PickHandler : public osgGA::GUIEventHandler {
 public:
 	PickHandler() {}
@@ -21,7 +23,8 @@ public:
 
 	void pick(osgViewer::Viewer* pViewer, const osgGA::GUIEventAdapter& ea)
 	{
-		if (!bCheckHit) return;
+		if (!m_bCheckHit) return;
+		if (!m_pFunc) return;
 
 		osg::Group* pGroupRoot = dynamic_cast<osg::Group*>(pViewer->getSceneData());
 		if (!pGroupRoot) return;
@@ -34,31 +37,36 @@ public:
 			const osg::NodePath& nodePath = hit.nodePath;
 			for (osg::NodePath::const_iterator nitr = nodePath.begin();
 				nitr != nodePath.end();
-				++nitr)
-			{
-				const osg::Transform* transform = dynamic_cast<const osg::Transform*>(*nitr);
-				if (transform)
-				{
-					if (transform->getDataVariance() == osg::Object::DYNAMIC) bHandleMovingModels = true;
+				++nitr) {
+				const osg::Transform* pTransform = dynamic_cast<const osg::Transform*>(*nitr);
+				if (pTransform)	{
+					if (pTransform->getDataVariance() == osg::Object::DYNAMIC) bHandleMovingModels = true;
+					break;
 				}
 			}
 
-			osg::Vec3 position = bHandleMovingModels ? hit.getLocalIntersectPoint() : hit.getWorldIntersectPoint();
+			osg::Vec3 vPos = bHandleMovingModels ? hit.getLocalIntersectPoint() : hit.getWorldIntersectPoint();
 			if (!bHandleMovingModels) {
-				//TerrainModification::getInstance()->modify((TerrainModifyType)(OsgManager::getInstance()->modifyType), Vector3(position.x(), position.y(), position.z()));
-
-				
+				m_pFunc(vPos, m_pUser);
 			}
 		}
 	}
 
-	void setValid(bool _valid) {
-		bCheckHit = _valid;
+	void setCheckHit(bool bCheckHit = false) {
+		m_bCheckHit = bCheckHit;
+	}
+
+	void setCallback(CBFun_Callback pFunc = nullptr, void *pUser = nullptr) {
+		m_pFunc = pFunc;
+		m_pUser = pUser;
 	}
 
 public:
-	bool bCheckHit = false;
+	bool m_bCheckHit = false;
 
 protected:
 	virtual ~PickHandler() {}
+
+	CBFun_Callback m_pFunc = nullptr;
+	void* m_pUser = nullptr;
 };

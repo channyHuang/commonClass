@@ -26,15 +26,10 @@ public:
 	void switchScene();
 	// picker
 	void clearPick(int nPickNum = 0);
-	void showPick(osg::Vec3& p);
+	void showPick(const osg::Vec3& vPos);
 	// show
 	void readNode(const std::string& sFileName);
 	void readOsgbLOD(const std::string& sFolder, const std::string& sTex);
-
-	void obj2osgt(const std::string& str);
-	void showModelObj(const std::string& sFolder, const std::string& sTex, bool bUseOsgLoad = true);
-	
-	void showModelUsingAssimp(std::string sFileName, std::string sTextureName);
 
 protected:
 	OsgManagerBase();

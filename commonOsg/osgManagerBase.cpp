@@ -53,10 +53,10 @@ void OsgManagerBase::clearPick(int nPickNum) {
 	}
 }
 
-void OsgManagerBase::showPick(osg::Vec3& vPoint) {
-	m_vPickPoints.push_back(vPoint);
+void OsgManagerBase::showPick(const osg::Vec3& vPos) {
+	m_vPickPoints.push_back(vPos);
 
-	osg::ref_ptr<osg::Geometry> pGeom = createPlanet(.02f, osg::Vec4(1, 0, 0, 0), vPoint);
+	osg::ref_ptr<osg::Geometry> pGeom = createPlanet(.02f, osg::Vec4(1, 0, 0, 0), vPos);
 	m_pRootGeomDistance->addChild(pGeom);
 	if (!(m_vPickPoints.size() & 1)) {
 		m_pRootGeomDistance->removeChild(m_pRootGeomDistance->getNumChildren() - 1, 1);
