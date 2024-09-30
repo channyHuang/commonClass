@@ -75,7 +75,7 @@ void OsgManagerBase::showPick(const osg::Vec3& vPos) {
 		osg::Vec3 vPos = (m_vPickPoints[m_vPickPoints.size() - 1] + m_vPickPoints[m_vPickPoints.size() - 2]) / 2;
 
 		m_pRootGeomDistance->addChild(pGeomLine);
-		m_pRootGeomDistance->addChild(createText(vPos, 25, std::string(cDist) + "m"));
+		m_pRootGeomDistance->addChild(createText(vPos + osg::Vec3(-.5f, -.5f, -.5f), 25, std::string(cDist) + "m"));
 	}
 }
 
