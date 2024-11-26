@@ -17,6 +17,8 @@ std::vector<std::string> splitString(std::string& str, char c) {
 			res.push_back(str.substr(stpos, nextpos - stpos));
 
 			stpos = nextpos + 1;
+			while (stpos <= endIdx && str[stpos] == c) stpos++;
+			if (stpos > endIdx) break;
 		}
 		else {
 			res.push_back(str.substr(stpos));

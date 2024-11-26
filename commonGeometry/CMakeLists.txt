@@ -1,19 +1,21 @@
 FILE(GLOB LIBRARY_FILES_C "*.cpp" "*.c")
 FILE(GLOB LIBRARY_FILES_H "*.h" "*.inl")
 
-set(projectName commonGeometry)
+project(commonGeometry)
 
-include_directories(${projectName}
-	"./../"
+set(OUTER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../)
+
+include_directories(${PROJECT_NAME}
+	${OUTER_DIR}
 	)
 	
 link_directories(${projectName}
-	)
+)
 
-add_library(${projectName}
+add_library(${PROJECT_NAME}
 ${LIBRARY_FILES_C} 
 ${LIBRARY_FILES_H}
 )
 
-TARGET_LINK_LIBRARIES(${projectName}
+TARGET_LINK_LIBRARIES(${PROJECT_NAME}
 )
