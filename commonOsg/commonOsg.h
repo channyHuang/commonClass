@@ -36,6 +36,8 @@
 #include <osgGA/TrackballManipulator>
 #include <osgText/Text>
 
+#include <osg/Callback>
+
 #include "commonFunc.h"
 
 #include <unordered_map>
