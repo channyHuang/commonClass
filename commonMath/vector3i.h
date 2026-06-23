@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstring>
 #include <string>
+#include <cstdint>
 
 #include "vector3.h"
 

@@ -1,17 +1,10 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 4.0)
 
 project(nativefiledialog)
 
 FILE(GLOB LIBRARY_FILES_COMMON 
 	"*.h" "*.inl"
 	nfd_common.c)
-
-include_directories(${projectName}
-	"./../"
-	)
-	
-link_directories(${projectName}
-	)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 FILE(GLOB LIBRARY_FILES
@@ -26,17 +19,7 @@ ${LIBRARY_FILES_COMMON}
 ${LIBRARY_FILES}
 )
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-	find_package(GTK2 REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GTK3 REQUIRED IMPORTED_TARGET gtk+-3.0)
+target_link_libraries(${PROJECT_NAME} PRIVATE PkgConfig::GTK3)
 
-	include_directories(${PROJECT_NAME}
-		${GTK2_INCLUDE_DIRS}
-	)
-	target_link_libraries(${PROJECT_NAME}
-		${GTK2_LIBRARIES}
-	)
-else()
-TARGET_LINK_LIBRARIES(${PROJECT_NAME}
-
-)
-endif()
