@@ -31,8 +31,8 @@ std::vector<std::string> splitString(std::string& str, char c) {
 osg::Node* createOsgGlslNode(osg::ref_ptr<osg::Geometry> pGeom, osgViewer::Viewer* pViewer, std::string sTextrueName)
 {
 	osg::ref_ptr<osg::Program> program = new osg::Program;
-	program->addShader(osgDB::readRefShaderFile(osg::Shader::VERTEX, "E:/projects/work_svn/framework/osg/shaderfile/vshader_demo.glsl"));
-	program->addShader(osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "E:/projects/work_svn/framework/osg/shaderfile/fshader_demo.glsl"));
+	program->addShader(osgDB::readRefShaderFile(osg::Shader::VERTEX, "shaders/vshader_demo.glsl"));
+	program->addShader(osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/fshader_demo.glsl"));
 
 	osg::ref_ptr<osg::StateSet> ss = pGeom->getOrCreateStateSet();
 	ss->setAttribute(program);
@@ -73,8 +73,8 @@ osg::ref_ptr<osg::Geometry> createGlslGeom(const tinyobj::attrib_t& attrib,
 	osg::ref_ptr<osg::Geometry> pGeom = new osg::Geometry;
 
 	osg::ref_ptr<osg::Program> program = new osg::Program;
-	program->addShader(osgDB::readRefShaderFile(osg::Shader::VERTEX, "E:/projects/work_svn/framework/osg/shaderfile/vshader_demo.glsl"));
-	program->addShader(osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "E:/projects/work_svn/framework/osg/shaderfile/fshader_demo.glsl"));
+	program->addShader(osgDB::readRefShaderFile(osg::Shader::VERTEX, "shaders/vshader_demo.glsl"));
+	program->addShader(osgDB::readRefShaderFile(osg::Shader::FRAGMENT, "shaders/fshader_demo.glsl"));
 
 	osg::ref_ptr<osg::StateSet> ss = pGeom->getOrCreateStateSet();
 	ss->setAttribute(program);
@@ -446,9 +446,8 @@ osg::Group* createSunLight()
 	return sunLightSource;
 }
 
-osg::TextureCubeMap* readCubeMap()
-{
-	osg::TextureCubeMap* cubemap = new osg::TextureCubeMap;
+osg::ref_ptr<osg::TextureCubeMap> readCubeMap() {
+	osg::ref_ptr<osg::TextureCubeMap> pCubeMap = new osg::TextureCubeMap;
 #define CUBEMAP_FILENAME(face) "texture/" #face ".bmp"
 
 	osg::ref_ptr<osg::Image>imagePosX = osgDB::readRefImageFile(CUBEMAP_FILENAME(posx));
@@ -458,35 +457,35 @@ osg::TextureCubeMap* readCubeMap()
 	osg::ref_ptr<osg::Image>imagePosZ = osgDB::readRefImageFile(CUBEMAP_FILENAME(posz));
 	osg::ref_ptr<osg::Image>imageNegZ = osgDB::readRefImageFile(CUBEMAP_FILENAME(negz));
 
-	if (imagePosX && imageNegX && imagePosY && imageNegY && imagePosZ && imageNegZ)
-	{
-		cubemap->setImage(osg::TextureCubeMap::POSITIVE_X, imagePosX);
-		cubemap->setImage(osg::TextureCubeMap::NEGATIVE_X, imageNegX);
-		cubemap->setImage(osg::TextureCubeMap::POSITIVE_Y, imagePosY);
-		cubemap->setImage(osg::TextureCubeMap::NEGATIVE_Y, imageNegY);
-		cubemap->setImage(osg::TextureCubeMap::POSITIVE_Z, imagePosZ);
-		cubemap->setImage(osg::TextureCubeMap::NEGATIVE_Z, imageNegZ);
+	if (imagePosX && imageNegX && imagePosY && imageNegY && imagePosZ && imageNegZ) {
+		pCubeMap->setImage(osg::TextureCubeMap::POSITIVE_X, imagePosX);
+		pCubeMap->setImage(osg::TextureCubeMap::NEGATIVE_X, imageNegX);
+		pCubeMap->setImage(osg::TextureCubeMap::POSITIVE_Y, imagePosY);
+		pCubeMap->setImage(osg::TextureCubeMap::NEGATIVE_Y, imageNegY);
+		pCubeMap->setImage(osg::TextureCubeMap::POSITIVE_Z, imagePosZ);
+		pCubeMap->setImage(osg::TextureCubeMap::NEGATIVE_Z, imageNegZ);
 
-		cubemap->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
-		cubemap->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
-		cubemap->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP_TO_EDGE);
+		pCubeMap->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
+		pCubeMap->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
+		pCubeMap->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP_TO_EDGE);
 
-		cubemap->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
-		cubemap->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+		pCubeMap->setUseHardwareMipMapGeneration(true);
+
+		pCubeMap->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
+		pCubeMap->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+	} else {
+		printf("Error: skybox could not find background textures\n");
 	}
 
-	return cubemap;
+	return pCubeMap;
 }
 
-class MoveEarthySkyWithEyePointTransform : public osg::Transform
-{
+class MoveEarthySkyWithEyePointTransform : public osg::Transform {
 public:
 	/** Get the transformation matrix which moves from local coords to world coords.*/
-	virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const
-	{
+	virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const {
 		osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
-		if (cv)
-		{
+		if (cv) {
 			osg::Vec3 eyePointLocal = cv->getEyeLocal();
 			matrix.preMultTranslate(eyePointLocal);
 		}
@@ -494,11 +493,9 @@ public:
 	}
 
 	/** Get the transformation matrix which moves from world coords to local coords.*/
-	virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const
-	{
+	virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const {
 		osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
-		if (cv)
-		{
+		if (cv) {
 			osg::Vec3 eyePointLocal = cv->getEyeLocal();
 			matrix.postMultTranslate(-eyePointLocal);
 		}
@@ -506,83 +503,62 @@ public:
 	}
 };
 
-struct TexMatCallback : public osg::NodeCallback
-{
-public:
+osg::ref_ptr<osg::Geometry> createCubeGeometryForSkybox() {
+    osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+    osg::Vec3 v[8] = {
+        {-1, -1, -1}, { 1, -1, -1}, { 1, -1,  1}, {-1, -1,  1}, 
+        {-1,  1, -1}, { 1,  1, -1}, { 1,  1,  1}, {-1,  1,  1}  
+    };
+    
+    unsigned int indices[36] = {
+        1, 5, 2,  2, 5, 6,
+        0, 3, 4,  4, 3, 7,
+        4, 7, 5,  5, 7, 6,
+        0, 1, 3,  3, 1, 2,
+        3, 2, 7,  7, 2, 6,
+        0, 4, 1,  1, 4, 5
+    };
+    
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(8, v);
+    osg::ref_ptr<osg::Vec3Array> texCoords = new osg::Vec3Array;
+    
+    for (int i = 0; i < 8; ++i) {
+        texCoords->push_back(v[i]); 
+    }
+    
+    geom->setVertexArray(vertices);
+    geom->setTexCoordArray(0, texCoords);
+    
+    osg::ref_ptr<osg::DrawElementsUInt> elements = new osg::DrawElementsUInt(GL_TRIANGLES, 36, indices);
+    geom->addPrimitiveSet(elements);
+    
+    osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array;
+    for (int i = 0; i < 8; ++i) normals->push_back(v[i]);
+    geom->setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
 
-	TexMatCallback(osg::TexMat& tm) :
-		_texMat(tm)
-	{
-	}
+    return geom;
+}
 
-	virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-	{
-		osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
-		if (cv)
-		{
-			const osg::Matrix& MV = *(cv->getModelViewMatrix());
-			const osg::Matrix R = osg::Matrix::rotate(osg::DegreesToRadians(112.0f), 0.0f, 0.0f, 1.0f) *
-				osg::Matrix::rotate(osg::DegreesToRadians(90.0f), 1.0f, 0.0f, 0.0f);
+osg::ref_ptr<osg::Node> createSkyBox() {
+	osg::ref_ptr<osg::Geode> pGeode = new osg::Geode;
 
-			osg::Quat q = MV.getRotate();
-			const osg::Matrix C = osg::Matrix::rotate(q.inverse());
+    osg::ref_ptr<osg::Geometry> pGeom = createCubeGeometryForSkybox();
+    osg::ref_ptr<osg::StateSet> pStateset = pGeom->getOrCreateStateSet();
 
-			_texMat.setMatrix(C * R);
-		}
+    osg::ref_ptr<osg::TextureCubeMap> pSkyMap = readCubeMap();
+    pStateset->setTextureAttributeAndModes(0, pSkyMap, osg::StateAttribute::ON);
 
-		traverse(node, nv);
-	}
+    // add shader
+    osg::ref_ptr<osg::Program> program = new osg::Program;
+    program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, "../data/shaders/skybox.vert"));
+    program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, "../data/shaders/skybox.frag"));
+    pStateset->setAttributeAndModes(program, osg::StateAttribute::ON);
 
-	osg::TexMat& _texMat;
-};
+    osg::ref_ptr<osg::Uniform> skyboxSampler = new osg::Uniform("skybox", 0);
+    pStateset->addUniform(skyboxSampler);
 
-osg::Node* createSkyBox()
-{
-	osg::StateSet* stateset = new osg::StateSet();
-
-	osg::TexEnv* te = new osg::TexEnv;
-	te->setMode(osg::TexEnv::REPLACE);
-	stateset->setTextureAttributeAndModes(0, te, osg::StateAttribute::ON);
-
-	osg::TexGen* tg = new osg::TexGen;
-	tg->setMode(osg::TexGen::NORMAL_MAP);
-	stateset->setTextureAttributeAndModes(0, tg, osg::StateAttribute::ON);
-
-	osg::TexMat* tm = new osg::TexMat;
-	stateset->setTextureAttribute(0, tm);
-
-	osg::TextureCubeMap* skymap = readCubeMap();
-	stateset->setTextureAttributeAndModes(0, skymap, osg::StateAttribute::ON);
-
-	stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-	stateset->setMode(GL_CULL_FACE, osg::StateAttribute::OFF);
-
-	// clear the depth to the far plane.
-	osg::Depth* depth = new osg::Depth;
-	depth->setFunction(osg::Depth::ALWAYS);
-	depth->setRange(1.0, 1.0);
-	stateset->setAttributeAndModes(depth, osg::StateAttribute::ON);
-
-	stateset->setRenderBinDetails(-1, "RenderBin");
-
-	osg::Drawable* drawable = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 100));
-
-	osg::Geode* geode = new osg::Geode;
-	geode->setCullingActive(false);
-	geode->setStateSet(stateset);
-	geode->addDrawable(drawable);
-
-
-	osg::Transform* transform = new MoveEarthySkyWithEyePointTransform;
-	transform->setCullingActive(false);
-	transform->addChild(geode);
-
-	osg::ClearNode* clearNode = new osg::ClearNode;
-	//  clearNode->setRequiresClear(false);
-	clearNode->setCullCallback(new TexMatCallback(*tm));
-	clearNode->addChild(transform);
-
-	return clearNode;
+    pGeode->addChild(pGeom);
+    return pGeode;
 }
 
 osg::ref_ptr<osg::Program> loadShaderPrograms(const std::string& name, 

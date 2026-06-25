@@ -199,10 +199,10 @@ extern osg::ref_ptr<osg::Geometry> loadOsgNode(const std::string& sFileName);
 extern osg::Node* createText(const osg::Vec3& position, float characterSize, const std::string& message, float minScale = 0.0, float maxScale = FLT_MAX);
 extern osg::ref_ptr<osg::LineWidth> getNewLineWidth(float width = 2.f);
 extern osg::ref_ptr<osg::Geode> createAxis(float len = 10.0);
-extern osg::Node* createSkyBox();
+extern osg::ref_ptr<osg::Node> createSkyBox();
 extern osg::Group* createSunLight();
 extern osg::ref_ptr<osg::LightSource> createLight(const osg::Vec3& pos, int num, const osg::BoundingSphere& bs, osg::ref_ptr<osg::Group> root);
-extern osg::TextureCubeMap* readCubeMap();
+extern osg::ref_ptr<osg::TextureCubeMap> readCubeMap();
 extern osg::ref_ptr<osg::Program> loadShaderPrograms(const std::string& name,
 													 const std::string& vshaderName, const std::string& fshaderName);
 extern osg::ref_ptr<osg::Material> createMaterial();
@@ -218,3 +218,5 @@ extern osg::TextureRectangle* createFloatTextureRectangle(int textureSize);
 extern std::vector<std::string> splitString(std::string& str, char c = '\t');
 
 extern float calcObjProjectArea(std::string sMeshName, std::string sPath = "");
+// skybox
+extern osg::ref_ptr<osg::Geometry> createCubeGeometryForSkybox();
